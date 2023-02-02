@@ -1,0 +1,29 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - build
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    steps:
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 6.0.2
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Install tauri
+        run: pnpm tauri build
+
+      - name: Create release
+      - uses: actions/checkout@v2
+      - uses: ncipollo/release-action@v1
+          with:
+            artifacts: "src-tauri\target\release\bundle\**\*.exe, src-tauri\target\release\bundle\**\*.dmg"
+            bodyFile: "body.md"
