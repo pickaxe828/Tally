@@ -1,10 +1,10 @@
 [package]
 name = "tally"
-version = "0.0.0"
+version = "0.1.0"
 description = "A tally app based on Tauri"
 authors = ["Pickaxe828"]
 license = ""
-repository = ""
+repository = "https://github.com/pickaxe828/Tally"
 edition = "2021"
 rust-version = "1.57"
 
