@@ -13,7 +13,6 @@ jobs:
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
     steps:
-      - name: Setup
         uses: pnpm/action-setup@v2
         with:
           version: 6.0.2
