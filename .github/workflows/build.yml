@@ -8,8 +8,9 @@ jobs:
     name: Build binaries
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
+        os: [windows-latest, ubuntu-20.04, macos-latest]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -27,7 +28,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Install tauri
+      - name: Build binaries
         run: pnpm tauri build
 
       - name: Create release
