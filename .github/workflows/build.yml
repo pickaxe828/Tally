@@ -40,5 +40,4 @@ jobs:
       - name: Create release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "src-tauri/target/release/bundle/msi/*.msi, src-tauri/target/release/bundle/dmg/*.dmg"
-          bodyFile: "body.md"
+          artifacts: "src-tauri/target/release/bundle/msi/*.msi, src-tauri/target/release/bundle/dmg/*.dmg, src-tauri/target/release/bundle/deb/*.deb, src-tauri/target/release/bundle/appimage/*.AppImage"
