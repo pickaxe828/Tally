@@ -24,6 +24,6 @@ jobs:
       - name: Create release
       - uses: actions/checkout@v2
       - uses: ncipollo/release-action@v1
-          with:
-            artifacts: "src-tauri/target/release/bundle/msi/*.msi", "src-tauri/target/release/bundle/dmg/*.dmg"
-            bodyFile: "body.md"
+        with:
+          artifacts: "src-tauri/target/release/bundle/msi/*.msi, src-tauri/target/release/bundle/dmg/*.dmg"
+          bodyFile: "body.md"
