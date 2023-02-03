@@ -1,29 +1,119 @@
 name: Build
 
 on:
-  push:
+  pull_request:
+    types:
+      - closed
     branches:
       - build
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
+    name: Build binaries
+    runs-on: ${{ matrix.config.os }}
     strategy:
+      fail-fast: false
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
+        config:
+        - os: ubuntu-latest
+          arch: x86_64
+          rust_target: x86_64-unknown-linux-gnu
+        - os: macos-latest
+          arch: x86_64
+          rust_target: x86_64-apple-darwin
+        - os: macos-latest
+          arch: aarch64
+          rust_target: aarch64-apple-darwin
+        - os: windows-latest
+          arch: x86_64
+          rust_target: x86_64-pc-windows-msvc
+
     steps:
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 6.0.2
-      - name: Install dependencies
-        run: pnpm install
+      # Checkout
+    - name: Bump version and push tag
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.sha }}
+        fetch-depth: '5'
 
-      - name: Install tauri
-        run: pnpm tauri build
+    # Bump version and push tag
+    - name: Bump version and push tag
+      id: tag_version
+      uses: anothrNick/github-tag-action@1.61.0 # Don't use @master unless you're happy to test the latest version
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        WITH_V: true
+        DEFAULT_BUMP: "#patch"
+      
+    # Setups and installs dependencies
+    - name: Setup Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        targets: ${{ matrix.config.rust_target }}
 
-      - name: Create release
-      - uses: actions/checkout@v2
-      - uses: ncipollo/release-action@v1
-          with:
-            artifacts: "src-tauri\target\release\bundle\msi\*.msi, src-tauri\target\release\bundle\dmg\*.dmg"
-            bodyFile: "body.md"
+    - uses: Swatinem/rust-cache@v2
+      with:
+        key: ${{ matrix.config.rust_target }}
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '19.x'
+      
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 6.0.2
+      
+    - name: Install dependencies
+      run: pnpm install
+      
+    - name: Install dependencies (Ubuntu)
+      if: matrix.os == 'ubuntu-20.04'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libappindicator3-dev librsvg2-dev patchelf
+
+    - name: Build binaries
+      run:  pnpm tauri build
+      
+    # Extract and upload artifacts to create release
+    - name: Create release for AppImage
+      uses: actions/upload-artifact@v2
+      if: matrix.config.os == 'ubuntu-latest'
+      with:
+        name: Tally-${{ steps.tag_version.outputs.new_tag }}-linux-${{ matrix.config.arch }}.AppImage
+        path: src-tauri/target/release/bundle/appimage/*.AppImage
+        if-no-files-found: error
+
+    - name: Create release for deb
+      uses: actions/upload-artifact@v2
+      if: matrix.config.os == 'ubuntu-latest'
+      with:
+        name: Tally-${{ steps.tag_version.outputs.new_tag }}-linux-${{ matrix.config.arch }}.deb
+        path: src-tauri/target/release/bundle/deb/*.deb
+        if-no-files-found: error
+
+    - name: Create release for dmg
+      uses: actions/upload-artifact@v2
+      if: matrix.config.os == 'macos-latest'
+      with:
+        name: Tally-${{ steps.tag_version.outputs.new_tag }}-macos-${{ matrix.config.arch }}.dmg
+        path: src-tauri/target/release/bundle/dmg/*.dmg
+        if-no-files-found: error
+      
+    - name: Create release for app
+      uses: actions/upload-artifact@v2
+      if: matrix.config.os == 'macos-latest'
+      with:
+        name: Tally-${{ steps.tag_version.outputs.new_tag }}-macos-${{ matrix.config.arch }}.app
+        path: src-tauri/target/release/bundle/macos/*.app
+        if-no-files-found: error
+
+    - name: Create release for msi
+      uses: actions/upload-artifact@v2
+      if: matrix.config.os == 'windows-latest'
+      with:
+        name: Tally-${{ steps.tag_version.outputs.new_tag }}-windows-${{ matrix.config.arch }}.msi
+        path: src-tauri/target/release/bundle/msi/*.msi
+        if-no-files-found: error
