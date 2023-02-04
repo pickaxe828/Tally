@@ -8,6 +8,17 @@ on:
       - build
 
 jobs:
+  setup:
+    name: Init
+    runs-on: ubuntu-latest
+    steps:
+      # Bump version and push tag
+    - name: Bump version and push tag
+      id: tag_version
+      uses: mathieudutour/github-tag-action@v6.1
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+
   build:
     name: Build binaries
     runs-on: ${{ matrix.config.os }}
@@ -36,13 +47,6 @@ jobs:
         ref: ${{ github.sha }}
         fetch-depth: '5'
 
-    # Bump version and push tag
-    - name: Bump version and push tag
-      id: tag_version
-      uses: mathieudutour/github-tag-action@v6.1
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-      
     # Setups and installs dependencies
     - name: Setup Rust
       uses: dtolnay/rust-toolchain@stable
