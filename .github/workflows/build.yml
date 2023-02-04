@@ -30,7 +30,7 @@ jobs:
 
     steps:
       # Checkout
-    - name: Bump version and push tag
+    - name: Checkout
       uses: actions/checkout@v3
       with:
         ref: ${{ github.sha }}
@@ -67,7 +67,7 @@ jobs:
       run: pnpm install
       
     - name: Install dependencies (Ubuntu)
-      if: matrix.os == 'ubuntu-20.04'
+      if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get update
         sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libappindicator3-dev librsvg2-dev patchelf
@@ -77,41 +77,41 @@ jobs:
       
     # Extract and upload artifacts to create release
     - name: Create release for AppImage
-      uses: actions/upload-artifact@v2
+      uses: ncipollo/release-action@v1.12.0
       if: matrix.config.os == 'ubuntu-latest'
       with:
         name: Tally-${{ steps.tag_version.outputs.new_version }}-linux-${{ matrix.config.arch }}.AppImage
-        path: src-tauri/target/release/bundle/appimage/*.AppImage
-        if-no-files-found: error
+        artifacts: src-tauri/target/release/bundle/appimage/*.AppImage
+        allowUpdates: true
 
     - name: Create release for deb
-      uses: actions/upload-artifact@v2
+      uses: ncipollo/release-action@v1.12.0
       if: matrix.config.os == 'ubuntu-latest'
       with:
         name: Tally-${{ steps.tag_version.outputs.new_version }}-linux-${{ matrix.config.arch }}.deb
-        path: src-tauri/target/release/bundle/deb/*.deb
-        if-no-files-found: error
+        artifacts: src-tauri/target/release/bundle/deb/*.deb
+        allowUpdates: true
 
     - name: Create release for dmg
-      uses: actions/upload-artifact@v2
+      uses: ncipollo/release-action@v1.12.0
       if: matrix.config.os == 'macos-latest'
       with:
         name: Tally-${{ steps.tag_version.outputs.new_version }}-macos-${{ matrix.config.arch }}.dmg
-        path: src-tauri/target/release/bundle/dmg/*.dmg
-        if-no-files-found: error
+        artifacts: src-tauri/target/release/bundle/dmg/*.dmg
+        allowUpdates: true
       
     - name: Create release for app
-      uses: actions/upload-artifact@v2
+      uses: ncipollo/release-action@v1.12.0
       if: matrix.config.os == 'macos-latest'
       with:
         name: Tally-${{ steps.tag_version.outputs.new_version }}-macos-${{ matrix.config.arch }}.app
-        path: src-tauri/target/release/bundle/macos/*.app
-        if-no-files-found: error
+        artifacts: src-tauri/target/release/bundle/macos/*.app
+        allowUpdates: true
 
     - name: Create release for msi
-      uses: actions/upload-artifact@v2
+      uses: ncipollo/release-action@v1.12.0
       if: matrix.config.os == 'windows-latest'
       with:
         name: Tally-${{ steps.tag_version.outputs.new_version }}-windows-${{ matrix.config.arch }}.msi
-        path: src-tauri/target/release/bundle/msi/*.msi
-        if-no-files-found: error
+        artifacts: src-tauri/target/release/bundle/msi/*.msi
+        allowUpdates: true
