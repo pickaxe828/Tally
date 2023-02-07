@@ -7,6 +7,9 @@ on:
     branches:
       - build
 
+env:
+  BUILD_PATH: ${{ env.BUILD_PATH }}
+
 jobs:
   init:
     name: Init
@@ -85,46 +88,51 @@ jobs:
       
     # Extract and upload artifacts to create release
     - name: Create release for AppImage
-      uses: ncipollo/release-action@v1.12.0
       if: matrix.config.os == 'ubuntu-latest'
+      uses: ncipollo/release-action@v1.12.0
+    - run: mv ${{ env.BUILD_PATH }}/appimage/*.AppImage ${{ env.BUILD_PATH }}/appimage/Tally-${{ needs.init.outputs.new_version }}-linux-${{ matrix.config.arch }}.AppImage
       with:
-        name: Tally-${{ needs.init.outputs.new_version }}-linux-${{ matrix.config.arch }}.AppImage
+        name: ${{ needs.init.outputs.new_tag }}
         tag: ${{ needs.init.outputs.new_tag }}
-        artifacts: src-tauri/target/release/bundle/appimage/*.AppImage
+        artifacts: ${{ env.BUILD_PATH }}/appimage/*.AppImage
         allowUpdates: true
 
     - name: Create release for deb
-      uses: ncipollo/release-action@v1.12.0
       if: matrix.config.os == 'ubuntu-latest'
+      uses: ncipollo/release-action@v1.12.0
+    - run: mv ${{ env.BUILD_PATH }}/deb/*.deb ${{ env.BUILD_PATH }}/deb/Tally-${{ needs.init.outputs.new_version }}-linux-${{ matrix.config.arch }}.deb
       with:
-        name: Tally-${{ needs.init.outputs.new_version }}-linux-${{ matrix.config.arch }}.deb
+        name: ${{ needs.init.outputs.new_tag }}
         tag: ${{ needs.init.outputs.new_tag }}
-        artifacts: src-tauri/target/release/bundle/deb/*.deb
+        artifacts: ${{ env.BUILD_PATH }}/deb/*.deb
         allowUpdates: true
 
     - name: Create release for dmg
-      uses: ncipollo/release-action@v1.12.0
       if: matrix.config.os == 'macos-latest'
+      uses: ncipollo/release-action@v1.12.0
+    - run: mv ${{ env.BUILD_PATH }}/dmg/*.dmg ${{ env.BUILD_PATH }}/dmg/Tally-${{ needs.init.outputs.new_version }}-macos-${{ matrix.config.arch }}.dmg
       with:
-        name: Tally-${{ needs.init.outputs.new_version }}-macos-${{ matrix.config.arch }}.dmg
+        name: ${{ needs.init.outputs.new_tag }}
         tag: ${{ needs.init.outputs.new_tag }}
-        artifacts: src-tauri/target/release/bundle/dmg/*.dmg
+        artifacts: ${{ env.BUILD_PATH }}/dmg/*.dmg
         allowUpdates: true
       
     - name: Create release for app
-      uses: ncipollo/release-action@v1.12.0
       if: matrix.config.os == 'macos-latest'
+      uses: ncipollo/release-action@v1.12.0
+    - run: mv ${{ env.BUILD_PATH }}/macos/*.app ${{ env.BUILD_PATH }}/macos/Tally-${{ needs.init.outputs.new_version }}-macos-${{ matrix.config.arch }}.app
       with:
-        name: Tally-${{ needs.init.outputs.new_version }}-macos-${{ matrix.config.arch }}.app
+        name: ${{ needs.init.outputs.new_tag }}
         tag: ${{ needs.init.outputs.new_tag }}
-        artifacts: src-tauri/target/release/bundle/macos/*.app
+        artifacts: ${{ env.BUILD_PATH }}/macos/*.app
         allowUpdates: true
 
     - name: Create release for msi
-      uses: ncipollo/release-action@v1.12.0
       if: matrix.config.os == 'windows-latest'
+      uses: ncipollo/release-action@v1.12.0
+    - run: mv ${{ env.BUILD_PATH }}/msi/*.msi ${{ env.BUILD_PATH }}/msi/Tally-${{ needs.init.outputs.new_version }}-windows-${{ matrix.config.arch }}.msi
       with:
-        name: Tally-${{ needs.init.outputs.new_version }}-windows-${{ matrix.config.arch }}.msi
+        name: ${{ needs.init.outputs.new_tag }}
         tag: ${{ needs.init.outputs.new_tag }}
-        artifacts: src-tauri/target/release/bundle/msi/*.msi
+        artifacts: ${{ env.BUILD_PATH }}/msi/*.msi
         allowUpdates: true
