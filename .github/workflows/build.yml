@@ -8,7 +8,7 @@ on:
       - build
 
 env:
-  BUILD_PATH: ${{ env.BUILD_PATH }}
+  BUILD_PATH: src-tauri/target/release/bundle
 
 jobs:
   init:
