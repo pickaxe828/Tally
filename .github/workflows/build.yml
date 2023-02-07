@@ -89,8 +89,8 @@ jobs:
     # Extract and upload artifacts to create release
     - name: Create release for AppImage
       if: matrix.config.os == 'ubuntu-latest'
-      uses: ncipollo/release-action@v1.12.0
-    - run: mv ${{ env.BUILD_PATH }}/appimage/*.AppImage ${{ env.BUILD_PATH }}/appimage/Tally-${{ needs.init.outputs.new_version }}-linux-${{ matrix.config.arch }}.AppImage
+      run: mv ${{ env.BUILD_PATH }}/appimage/*.AppImage ${{ env.BUILD_PATH }}/appimage/Tally-${{ needs.init.outputs.new_version }}-linux-${{ matrix.config.arch }}.AppImage
+    - uses: ncipollo/release-action@v1.12.0
       with:
         name: ${{ needs.init.outputs.new_tag }}
         tag: ${{ needs.init.outputs.new_tag }}
@@ -99,8 +99,8 @@ jobs:
 
     - name: Create release for deb
       if: matrix.config.os == 'ubuntu-latest'
-      uses: ncipollo/release-action@v1.12.0
-    - run: mv ${{ env.BUILD_PATH }}/deb/*.deb ${{ env.BUILD_PATH }}/deb/Tally-${{ needs.init.outputs.new_version }}-linux-${{ matrix.config.arch }}.deb
+      run: mv ${{ env.BUILD_PATH }}/deb/*.deb ${{ env.BUILD_PATH }}/deb/Tally-${{ needs.init.outputs.new_version }}-linux-${{ matrix.config.arch }}.deb
+    - uses: ncipollo/release-action@v1.12.0
       with:
         name: ${{ needs.init.outputs.new_tag }}
         tag: ${{ needs.init.outputs.new_tag }}
@@ -109,8 +109,8 @@ jobs:
 
     - name: Create release for dmg
       if: matrix.config.os == 'macos-latest'
-      uses: ncipollo/release-action@v1.12.0
-    - run: mv ${{ env.BUILD_PATH }}/dmg/*.dmg ${{ env.BUILD_PATH }}/dmg/Tally-${{ needs.init.outputs.new_version }}-macos-${{ matrix.config.arch }}.dmg
+      run: mv ${{ env.BUILD_PATH }}/dmg/*.dmg ${{ env.BUILD_PATH }}/dmg/Tally-${{ needs.init.outputs.new_version }}-macos-${{ matrix.config.arch }}.dmg
+    - uses: ncipollo/release-action@v1.12.0
       with:
         name: ${{ needs.init.outputs.new_tag }}
         tag: ${{ needs.init.outputs.new_tag }}
@@ -119,8 +119,8 @@ jobs:
       
     - name: Create release for app
       if: matrix.config.os == 'macos-latest'
-      uses: ncipollo/release-action@v1.12.0
-    - run: mv ${{ env.BUILD_PATH }}/macos/*.app ${{ env.BUILD_PATH }}/macos/Tally-${{ needs.init.outputs.new_version }}-macos-${{ matrix.config.arch }}.app
+      run: mv ${{ env.BUILD_PATH }}/macos/*.app ${{ env.BUILD_PATH }}/macos/Tally-${{ needs.init.outputs.new_version }}-macos-${{ matrix.config.arch }}.app
+    - uses: ncipollo/release-action@v1.12.0
       with:
         name: ${{ needs.init.outputs.new_tag }}
         tag: ${{ needs.init.outputs.new_tag }}
@@ -129,8 +129,8 @@ jobs:
 
     - name: Create release for msi
       if: matrix.config.os == 'windows-latest'
-      uses: ncipollo/release-action@v1.12.0
-    - run: mv ${{ env.BUILD_PATH }}/msi/*.msi ${{ env.BUILD_PATH }}/msi/Tally-${{ needs.init.outputs.new_version }}-windows-${{ matrix.config.arch }}.msi
+      run: mv ${{ env.BUILD_PATH }}/msi/*.msi ${{ env.BUILD_PATH }}/msi/Tally-${{ needs.init.outputs.new_version }}-windows-${{ matrix.config.arch }}.msi
+    - uses: ncipollo/release-action@v1.12.0
       with:
         name: ${{ needs.init.outputs.new_tag }}
         tag: ${{ needs.init.outputs.new_tag }}
