@@ -36,6 +36,7 @@ window.addEventListener("keydown", function (event) {
       renderNumber(counterTxt, counter)
       break
     case "Enter": 
+      incrementBtn?.blur()
       counter++
       store()
       renderNumber(counterTxt, counter)
