@@ -80,6 +80,10 @@ jobs:
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
 
+      - name: configure Rust channel (macos-aarch only)
+        if: matrix.config.rust_target == 'aarch64-apple-darwin'
+        run: rustup target add ${{ matrix.config.rust_target }}
+
       - name: install dependencies (ubuntu only)
         if: matrix.config.os == 'ubuntu-20.04'
         run: |
