@@ -80,6 +80,10 @@ jobs:
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
 
+      - name: configure Rust channel (macos-aarch only)
+        if: matrix.config.rust_target == 'aarch64-apple-darwin'
+        run: rustup target add ${{ matrix.config.rust_target }}
+
       - name: install dependencies (ubuntu only)
         if: matrix.config.os == 'ubuntu-20.04'
         run: |
@@ -89,7 +93,8 @@ jobs:
       - name: install frontend dependencies
         run: pnpm install # change this to npm or pnpm depending on which one you use
 
-      - uses: tauri-apps/tauri-action@v0
+      - name: build binaries
+        uses: tauri-apps/tauri-action@dev
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
