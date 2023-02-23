@@ -75,12 +75,12 @@ jobs:
       - name: setup pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: 6.0.2
+          version: 7.27.1
 
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
 
-      - name: configure Rust channel (macos-aarch only)
+      - name: configure Rust target (macos-aarch only)
         if: matrix.config.rust_target == 'aarch64-apple-darwin'
         run: rustup target add ${{ matrix.config.rust_target }}
 
